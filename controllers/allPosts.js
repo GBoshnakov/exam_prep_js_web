@@ -1,21 +1,14 @@
 const router = require('express').Router();
-const mapErrors = require('../util/mappers');
+const { getPosts } = require('../services/post');
+const { mapPost } = require('../util/mappers');
 
-router.get('/allPosts', createGet);
-router.post('/allPosts', createPost);
+router.get('/allPosts', postsGet);
 
-function createGet(req, res) {
-    res.render('all-posts', { title: 'All Posts Page' })
-}
+//TODO check names, service
+async function postsGet(req, res) {
+    const posts = (await getPosts()).map(mapPost);
 
-//TODO 
-async function createPost(req, res) {
-    try {
-
-    } catch (error) {
-        console.log(error);
-        res.render('all-posts', { title: 'All Posts Page', errors: mapErrors(error) })
-    }
+    res.render('all-posts', { title: 'All Posts Page', posts });
 }
 
 module.exports = router;

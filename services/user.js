@@ -2,16 +2,18 @@ const User = require('../models/User');
 const { hash, compare } = require('bcrypt');
 
 //TODO
-async function register(username, password) {
-    const existing = await getUserByUsername(username);
+async function register(firstName, lastName, email, password) {
+    const existing = await getUserByEmail(email);
     if (existing) {
-        throw new Error('Username already exists');
+        throw new Error('Email already exists');
     }
 
     const hashedPassword = await hash(password, 10);
 
     const user = new User({
-        username,
+        firstName,
+        lastName,
+        email,
         hashedPassword
     });
     await user.save();
@@ -20,23 +22,23 @@ async function register(username, password) {
 }
 
 //TODO
-async function login(username, password) {
-    const user = await getUserByUsername(username);
+async function login(email, password) {
+    const user = await getUserByEmail(email);
     if (!user) {
-        throw new Error('Incorrect username or password');
+        throw new Error('Incorrect email or password');
     }
 
     const match = await compare(password, user.hashedPassword);
     if (!match) {
-        throw new Error('Incorrect username or password');
+        throw new Error('Incorrect email or password');
     }
 
     return user;
 }
 
 //TODO
-async function getUserByUsername(username) {
-    const user = await User.findOne({ username: new RegExp(`^${username}$`, 'i') });
+async function getUserByEmail(email) {
+    const user = await User.findOne({ email: new RegExp(`^${email}$`, 'i') });
 
     return user;
 }
