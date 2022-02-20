@@ -9,7 +9,7 @@ router.get('/details/:id', detailsGet);
 async function detailsGet(req, res) {
     const id = req.params.id;
     const post = mapPost(await getPostById(id));
-    console.log(post.votes)
+
     if (req.session.user) {
         res.locals.hasUser = true;
         if (req.session.user._id == post.author._id) {
@@ -20,7 +20,6 @@ async function detailsGet(req, res) {
                     res.locals.hasVoted = true;
                 }
             });
-            // res.locals.hasVoted = post.votes.includes(req.session.user._id);
         }
     }
     console.log(res.locals.hasVoted, res.locals.isAuthor)
